@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pin Generator</title>
-    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -12,47 +12,107 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="pin-generator half-width">
-                    <input class="form-control" type="text">
-                    <button class="generate-btn">Generate Pin</button>
+                    <input id="pinDisplay" class="form-control" type="text">
+                    <button id="pinBtn" class="generate-btn">Generate Pin</button>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="input-section half-width">
-                    <input class="form-control" type="text">
+                    <input id="numDisplay" class="form-control" type="text">
                     <div class="numbers">
                         <div class="calc-body">
                             <div class="calc-button-row">
-                              <div class="button">7</div>
-                              <div class="button">8</div>
-                              <div class="button">9</div>
+                              <div onclick="getNumber(7)" class="button">7</div>
+                              <div onclick="getNumber(8)" class="button">8</div>
+                              <div onclick="getNumber(9)" class="button">9</div>
                             </div>
                             <div class="calc-button-row">
-                              <div class="button">4</div>
-                              <div class="button">5</div>
-                              <div class="button">6</div>
+                              <div onclick="getNumber(4)" class="button">4</div>
+                              <div onclick="getNumber(5)" class="button">5</div>
+                              <div onclick="getNumber(6)" class="button">6</div>
                             </div>
                             <div class="calc-button-row">
-                              <div class="button">1</div>
-                              <div class="button">2</div>
-                              <div class="button">3</div>
+                              <div onclick="getNumber(1)" class="button">1</div>
+                              <div onclick="getNumber(2)" class="button">2</div>
+                              <div onclick="getNumber(3)" class="button">3</div>
                             </div>
                             <div class="calc-button-row">
-                                <div class="button">&lt;</div>
-                                <div class="button">0</div>
-                                <div class="button">C</div>
+                                <div onclick="removeNumber()" class="button">&lt;</div>
+                                <div onclick="getNumber(0)" class="button">0</div>
+                                <div onclick="clearNumDisplay()" class="button">C</div>
                             </div>
                             <div>
-                                <button type="submit" class="submit-btn">Submit</button>
-                                <p class="action-left">3 try left</p>
+                                <button id="submitBtn" type="submit" class="submit-btn">Submit</button>
+                                <p class="action-left"><span id="tryLeft">3</span> try left</p>
                             </div>
                     </div>
                 </div>
             </div>
         </div>
         <div class="notify-section">
-            <p class="notify">❌ Pin Didn't Match, Please try again</p>
-            <p class="notify">✅ Pin Matched... Secret door is opening for you</p>
+            <p id="notifyDontMatch" class="notify">❌ Pin Didn't Match, Please try again</p>
+            <p id="notifyMatch" class="notify">✅ Pin Matched... Secret door is opening for you</p>
         </div>
     </div>
+
+    <script>
+        //Invisiable Nofification Text
+        document.getElementById('notifyDontMatch').style.display = 'none';
+        document.getElementById('notifyMatch').style.display = 'none';
+
+        //Pin Gegerate
+        const pinGenerate = document.getElementById('pinBtn');
+        pinGenerate.addEventListener('click', function(){
+            const pinNumber = Math.round( Math.random() * 100000);
+            // console.log(pinNumber);
+            document.getElementById('pinDisplay').value = pinNumber;
+        })
+
+        //Tey Variable
+        let tryLeft = 3;
+        // Matching Pin and Number
+        const btnSubmit = document.getElementById('submitBtn');
+        btnSubmit.addEventListener('click', function(){
+            const pinNum = document.getElementById('pinDisplay').value;
+            const displayNum = document.getElementById('numDisplay').value;
+            // console.log('pin: ' + pinNum + ' Number: ' + displayNum);
+            if(pinNum == displayNum){
+                document.getElementById('notifyDontMatch').style.display = 'none';
+                document.getElementById('notifyMatch').style.display = 'block';
+                tryLeft = 3;
+                document.getElementById('tryLeft').innerText = tryLeft;
+                document.getElementById('numDisplay').value = '';
+                document.getElementById('pinDisplay').value = '';
+            }
+            else{
+                document.getElementById('notifyMatch').style.display = 'none';
+                document.getElementById('notifyDontMatch').style.display = 'block';
+                document.getElementById('tryLeft').innerText = tryLeft-1;
+                tryLeft--;
+                if(tryLeft == 0){
+                    document.getElementById('submitBtn').style.display = 'none';
+                }
+            }
+        })
+
+        //Number Display
+        function getNumber(num){
+            // console.log(num);
+            document.getElementById('numDisplay').value += num;
+        }
+
+        // Removed Last Number
+        function removeNumber(){
+            var displayText = document.getElementById('numDisplay').value;
+            const Text = displayText.substring(0, displayText.length - 1);
+            document.getElementById('numDisplay').value = Text;
+            // console.log(Text);
+        }
+
+        // Clear Display
+        function clearNumDisplay(){
+            document.getElementById('numDisplay').value = '';
+        }
+    </script>
 </body>
 </html>
